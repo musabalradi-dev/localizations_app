@@ -1,10 +1,10 @@
 String getLanguageName(String code) {
   switch (code) {
     case 'en':
-      return 'English 🇬🇧';
+      return 'English';
     case 'ar':
-      return 'العربية 🇸🇦';
+      return 'العربية';
     default:
-      return 'English 🇬🇧';
+      return 'English';
   }
 }

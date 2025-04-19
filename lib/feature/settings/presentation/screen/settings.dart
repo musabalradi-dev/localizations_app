@@ -9,20 +9,68 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // استخدام SafeLocalizations للتحقق من null
+    final theme = Theme.of(context);
     final localizations = AppLocalizations.of(context);
+    final settingsBloc = context.read<SettingsBloc>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(localizations?.translate('settings') ?? 'Settings'),
-      ),
-      body: BlocBuilder<SettingsBloc, SettingsState>(
-        builder: (context, state) {
-          if (state is LanguageChangedState) {
-            return buildContent(context, state.locale);
-          }
-          return const Center(child: CircularProgressIndicator());
-        },
+      backgroundColor: theme.colorScheme.surface,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            backgroundColor: theme.colorScheme.primary,
+            iconTheme: IconThemeData(
+              color: theme.colorScheme.onPrimary,
+            ),
+            expandedHeight: 120,
+            floating: false,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text(
+                localizations?.translate('settings') ?? 'Settings',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  color: theme.colorScheme.onPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              centerTitle: true,
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      theme.colorScheme.primary,
+                      theme.colorScheme.secondary,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SliverFillRemaining(
+            child: BlocBuilder<SettingsBloc, SettingsState>(
+              bloc: settingsBloc,
+              builder: (context, state) {
+                if (state is LanguageChangedState) {
+                  return AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    transitionBuilder: (child, animation) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: child,
+                      );
+                    },
+                    child: buildContent(context, state.locale),
+                  );
+                }
+                return const Center(
+                  child: CircularProgressIndicator.adaptive(),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

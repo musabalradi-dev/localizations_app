@@ -12,6 +12,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # UI Packages
+  dropdown_button2: ^2.3.9
+
   # core packages
   equatable: ^2.0.7
 
